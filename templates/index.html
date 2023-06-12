@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+    
+    <script src="https://kit.fontawesome.com/14481c1a0f.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="flex justify-center space-x-8 px-16 bg-[#F2ECE9]" >
+
+    <p class="text-sm text-gray-200 fixed bottom-8 left-8 rounded-md bg-gray-900 px-8 py-4 drop-shadow-lg hidden">Proses sedang berlangsung . . . .</p>   
+
+    
+    <!-- {% include 'alert.html' %} -->
+
+    {% block body %}
+
+    
+    <!-- KOLOM KIRI -->
+    <div class="container mx-auto w-2/3 h-full box-border mt-4 overflow-auto">
+
+      <!-- ADMIN -->
+      <header>
+        <section>
+          <p class='text-black font-bold text-4xl py-6'>Admin</p>
+          <i class="fa-regular fa-circle-info"></i>
+          <div class="flex py-2 px-4 bg-zinc-100 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6  text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"> <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="px-4">
+            <p class=" text-zinc-800 font-bold">Mohon diperhatikan hal-hal berikut: </p>
+            <ol class="list-decimal list-inside">
+              <li>Proses dilakukan sesuai urutan (1,2,...,dst)</li>
+              <li>Durasi rata-rata setiap proses 10 - 20 menit tergantung jaringan internet</li>
+            </ol>
+          </div>
+          </div>
+        </section>
+      </header>
+
+      <!-- Web Scraping -->
+      <main>
+        <section class="flex flex-col py-8">
+          <p class="text-xl font-bold text-black">1. Web Scraping</p>
+          <div class="flex space-x-4 mt-4">
+            <form class="flex flex-col rounded-md w-full p-6 border border-black "
+              action="{{ url_for('scrapingTweet') }}" method="POST" enctype="multipart/form-data">
+
+              <p class="text-black text-sm font-medium">Mengumpulkan data tweet <span
+                class="bg-lime-100 rounded-sm px-1 text-green-700">ANIES BASWEDAN</span></p>
+              <button class="bg-[#52422f] text-white hover:bg-gray-50 hover:text-black hover:font-semibold focus:ring-1 focus:ring-black focus:bg-gray-50 focus:text-black focus:font-bold focus:cursor-not-allowed rounded-full px-4 py-2 mt-4 w-1/2 text-xs">Kumpulkan
+                Data</button>
+            </form>
+
+            <form class="flex flex-col rounded-md w-full p-6 border border-black "
+              action="{{ url_for('scrapingTweet') }}" method="POST" enctype="multipart/form-data">
+              <p class="text-black text-sm font-medium">Mengumpulkan data tweet <span
+                  class="bg-lime-100 rounded-sm px-1 text-green-700">PRABOWO SUBIANTO</p>
+              <button
+                class="bg-[#52422f] text-white hover:bg-gray-50 hover:text-black hover:font-semibold focus:ring-1 focus:ring-black focus:bg-gray-50 focus:text-black focus:font-bold focus:cursor-not-allowed rounded-full px-4 py-2 mt-4 w-1/2 text-xs">Kumpulkan
+                Data</button>
+            </form>
+
+            <form class="flex flex-col rounded-md w-full p-6 border border-black "
+              action="{{ url_for('scrapingTweet') }}" method="POST" enctype="multipart/form-data">
+              <p class="text-black text-sm font-medium">Mengumpulkan data tweet <span
+                  class="bg-lime-100 rounded-sm px-1 text-green-700">GANJAR PRANOWO</p>
+              <button
+                class="bg-[#52422f] text-white hover:bg-gray-50 hover:text-black hover:font-semibold focus:ring-1 focus:ring-black focus:bg-gray-50 focus:text-black focus:font-bold focus:cursor-not-allowed rounded-full px-4 py-2 mt-4 w-1/2 text-xs">Kumpulkan
+                Data</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Gabung Data -->
+        <section class="flex flex-col py-8">
+          <p class="text-xl font-bold text-black">2. Labelling Data</p>         
+
+          <div class="flex space-x-4 mt-4">
+            <form class="flex flex-col rounded-md w-full p-6 border border-black "
+              action="" method="POST" enctype="multipart/form-data">
+              <p class="text-black text-sm font-medium">Gabung Data </p>
+              <button
+                class="bg-[#52422f] text-white hover:bg-gray-50 hover:text-black hover:font-semibold focus:ring-1 focus:ring-black focus:bg-gray-50 focus:text-black focus:font-bold focus:cursor-not-allowed rounded-full px-4 py-2 mt-4 w-1/2 text-xs">Gabung Data</button>
+            </form>
+
+            <form class="flex flex-col rounded-md w-full p-6 border border-black "
+              action="" method="POST" enctype="multipart/form-data">
+              <p class="text-black text-sm font-medium">Menambahkan Label <span> <span
+                  class="bg-red-100 rounded-sm px-2 text-red-700">Negatif</span> atau <span
+                  class="bg-lime-100 rounded-sm px-2 text-green-700">Positif</span></p>
+              <button
+                class="bg-[#52422f] text-white hover:bg-gray-50 hover:text-black hover:font-semibold focus:ring-1 focus:ring-black focus:bg-gray-50 focus:text-black focus:font-bold focus:cursor-not-allowed rounded-full px-4 py-2 mt-4 w-1/2 text-xs">Tambahkan Label</button>
+            </form>
+          </div>         
+
+        </section>
+
+        <!-- Preprocessing Data -->
+        <section class="flex flex-col py-8">
+          <p class="text-xl font-bold text-black ">3. Preprocessing Data</p>
+
+          <div class="mt-4 mb-4 w-full">
+
+            <form class="flex flex-col items-center rounded-md w-full p-6 border border-black "
+              action="" method="POST" enctype="multipart/form-data">
+              <p class="text-black text-sm font-medium">Bersihkan data</p>
+              <button
+                class="flex bg-[#52422f] text-white hover:bg-gray-50 hover:text-[#52422f] hover:font-semibold hover:font-semibold focus:ring-1 focus:ring-black focus:bg-gray-50 focus:text-black focus:font-bold focus:cursor-not-allowed rounded-full px-14 py-3 mt-4 text-xs">Bersihkan Data</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Training Model -->
+        <section class="flex flex-col py-8">
+          <p class="text-xl font-bold text-rose-600 ">4. Training Model</p>
+
+          <div class="mt-4 mb-4 w-full">
+
+            <form class="flex flex-col items-center rounded-md w-full p-6 border border-rose-600 "
+              action="" method="POST" enctype="multipart/form-data">
+              <p class="text-black text-sm font-medium">Training model</p>
+              <button
+                class="flex bg-rose-600 text-white hover:bg-rose-800 focus:ring-1 hover:font-semibold focus:ring-black focus:bg-gray-50 focus:text-black focus:font-bold focus:cursor-not-allowed rounded-full px-14 py-3 mt-4 text-xs">Train</button>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+
+    {% endblock %}   
+    <script type="text/javascript" src="{{ url_for('static', filename='script/script.js') }}"></script>
+  </body>
+
+</html>
