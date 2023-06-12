@@ -7,16 +7,6 @@ import os
 path = "data_scraping"
 
 
-def cleanTxt(text):
-    text = re.sub('@[A-Za-z0–9]+', '', text)  # Removing @mentions
-    text = re.sub('#', '', text)  # Removing '#' hash tag
-    text = re.sub('RT[\s]+', '', text)  # Removing RT
-    text = re.sub('https?:\/\/\S+', '', text)  # Removing hyperlink
-    # remove non ASCII (emoticon, chinese word. etc)
-    text = text.encode('ascii', 'replace').decode('ascii')
-    return text
-
-
 def cari():
 
     # client = tweepy.Client(bearer_token="AAAAAAAAAAAAAAAAAAAAAMP6bAEAAAAAbEBt9bnifXMUG%2BcP8Pbt0rxTo%2F0%3DAVMwUuBirJHGiIuGorxWalSLQ2TeTlCMZdwgffhA7WTLMkPUgh",
@@ -48,12 +38,12 @@ def search_tweets_anies(query):
 
             username = tweet.id
             pesan = tweet.text.encode("utf-8")
-            pesan_cleaned = cleanTxt(pesan.decode("utf-8"))
+
             # sql = "INSERT INTO user(username,tweet,label) VALUE (%s,%s,%s)"
             # data = (username, pesan, "")
             data_anies.append({
                 'Username': username,
-                'Tweet': pesan_cleaned,
+                'Tweet': pesan,
             })
             # cursor.execute(sql, data)
             # db.commit()
@@ -78,12 +68,12 @@ def search_tweets_prabowo(query):
 
             username = tweet.id
             pesan = tweet.text.encode("utf-8")
-            pesan_cleaned = cleanTxt(pesan.decode("utf-8"))
+
             # sql = "INSERT INTO user(username,tweet,label) VALUE (%s,%s,%s)"
             # data = (username, pesan, "")
             data_prabowo.append({
                 'Username': username,
-                'Tweet': pesan_cleaned,
+                'Tweet': pesan,
             })
             # cursor.execute(sql, data)
             # db.commit()
@@ -108,12 +98,12 @@ def search_tweets_ganjar(query):
 
             username = tweet.id
             pesan = tweet.text.encode("utf-8")
-            pesan_cleaned = cleanTxt(pesan.decode("utf-8"))
+
             # sql = "INSERT INTO user(username,tweet,label) VALUE (%s,%s,%s)"
             # data = (username, pesan, "")
             data_ganjar.append({
                 'Username': username,
-                'Tweet': pesan_cleaned,
+                'Tweet': pesan,
             })
             # cursor.execute(sql, data)
             # db.commit()
