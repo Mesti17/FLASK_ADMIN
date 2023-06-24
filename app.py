@@ -9,7 +9,8 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 # from scraping_data import scraping_tweet
-from scraping_data_new import search_tweets_ganjar, search_tweets_anies, search_tweets_prabowo
+from scraping_data import search_tweets_ganjar, search_tweets_anies, search_tweets_prabowo
+import labeling_data
 from gabung_data import gabungdata
 
 app = Flask(__name__)
@@ -41,6 +42,11 @@ def scrapingTweetAnies():
 @app.route("/gabungdata", methods=['GET', "POST"])
 def gabungData():
     gabungdata()
+    return redirect(url_for("index"))
+
+
+@app.route("/labeldata", methods=['GET', "POST"])
+def labelData():
     return redirect(url_for("index"))
 
 
