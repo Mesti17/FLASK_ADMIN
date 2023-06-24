@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-path = "data_scraping"
+path = "dataset/data_scraping"
 
 
 def gabungdata():

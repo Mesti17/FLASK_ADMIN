@@ -102,12 +102,12 @@
 
         <!-- Preprocessing Data -->
         <section class="flex flex-col py-8">
-          <p class="text-xl font-bold text-black ">3. Preprocessing Data</p>
+          <p class="text-xl font-bold text-black ">3. Preprocessing  Data</p>
 
           <div class="mt-4 mb-4 w-full">
 
             <form class="flex flex-col items-center rounded-md w-full p-6 border border-black "
-              action="" method="POST" enctype="multipart/form-data">
+              action="{{ url_for('preprocessingData') }}" method="POST" enctype="multipart/form-data">
               <p class="text-black text-sm font-medium">Bersihkan data</p>
               <button
                 class="flex bg-[#52422f] text-white hover:bg-gray-50 hover:text-[#52422f] hover:font-semibold hover:font-semibold focus:ring-1 focus:ring-black focus:bg-gray-50 focus:text-black focus:font-bold focus:cursor-not-allowed rounded-full px-14 py-3 mt-4 text-xs">Bersihkan Data</button>

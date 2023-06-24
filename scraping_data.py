@@ -5,7 +5,7 @@ import pandas as pd
 import re
 import os
 
-path = "data_scraping"
+path = "dataset/data_scraping"
 
 
 def clean_tweet(tweet):

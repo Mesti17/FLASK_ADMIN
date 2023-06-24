@@ -11,6 +11,7 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 # from scraping_data import scraping_tweet
 from scraping_data import search_tweets_ganjar, search_tweets_anies, search_tweets_prabowo
 import labeling_data
+import preprocessing_data
 from gabung_data import gabungdata
 
 app = Flask(__name__)

@@ -1,12 +1,16 @@
 import pandas as pd
 import os
+import pymysql
+
+conn = pymysql.connect(host='localhost', port=int(
+    3306), user='root', passwd='', db='capres')
 
 negative_words = pd.read_csv(
-    "data_label/negatif_ta2.csv", header=None)[0].tolist()
+    "dataset/data_label/negatif_ta2.csv", header=None)[0].tolist()
 positive_words = pd.read_csv(
-    "data_label/positif_ta2.csv", header=None)[0].tolist()
+    "dataset/data_label/positif_ta2.csv", header=None)[0].tolist()
 
-df = pd.read_csv("data_scraping/tweet_gabungan.csv")
+df = pd.read_csv("dataset/data_scraping/tweet_gabungan.csv")
 
 # Function to count the number of negative and positive words in a tweet
 
@@ -31,9 +35,29 @@ for index, row in df.iterrows():
     df.at[index, 'Positive Count'] = positive_count
 
 # Assign the label based on the count of negative and positive words
-df['Label'] = 'Neutral'
-df.loc[df['Negative Count'] > df['Positive Count'], 'Label'] = 'Negative'
-df.loc[df['Positive Count'] > df['Negative Count'], 'Label'] = 'Positive'
+df['Label'] = 'netral'
+df.loc[df['Negative Count'] > df['Positive Count'], 'Label'] = 'negatif'
+df.loc[df['Positive Count'] > df['Negative Count'], 'Label'] = 'positif'
 # df.loc[df['Positive Count'] == df['Negative Count'], 'Label'] = 'Positive'
 
-df.to_csv("hasil_label/data_hasil_label.csv", index=False, encoding="utf-8")
+df.to_csv("dataset/data_hasil_label/data_hasil_label.csv",
+          index=False, encoding="utf-8")
+
+
+# Create a cursor
+cursor = conn.cursor()
+
+# Define the SQL query
+sql = "INSERT INTO sentimen (username, pesan, label) VALUES (%s, %s, %s)"
+
+
+# Iterate over the rows of the DataFrame and insert each row into the table
+for index, row in df.iterrows():
+    values = (str(row['Username']), str(row['Tweet']), str(row['Label']))
+    cursor.execute(sql, values)
+
+# Commit the changes to the database
+conn.commit()
+
+# Close the connection
+conn.close()
