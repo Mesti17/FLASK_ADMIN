@@ -15,11 +15,19 @@ def cari():
     #                        access_token="1512143020648386585-nlWO1PsMNXcNnrrMQVOqMOpUfsjorh",
     #                        access_token_secret="Jv42ZmzsILSCJHRDkhI6WL12KwWd4dTOrwLK1bTyOF1r2")
     # return client
-    client = tweepy.Client(bearer_token="AAAAAAAAAAAAAAAAAAAAALRtlAEAAAAAXAr51bq4Un%2B64%2BLUKSat0ytQbxs%3DxkXLutVyvSer82Xu58AqG1L2QoDhKUVm857NP0t4hSduMhaGjw",
-                           consumer_key="3gZCGzzSNOGDH7IeRkfkV3arC",
-                           consumer_secret="gCJeJ3SFs2amrGHmjUYEcOTVD0HwoSyT44AZfAawC2ZnM0e57j",
-                           access_token="1600871632494800897-gT6SMqkpLjRKWb0zcx7JHwtQ83O35C",
-                           access_token_secret="0ywOhXRDtQbch6vEIMxNMB6gQouNQdE8mdxzOaPW3xMzy")
+
+    API_KEY = "gwHLgCMqZ3PDnU0xpq5vbvPxa"
+    API_KEY_SECRET = "ABsMw4guZKrNJKOgTGF4LpZRemzUFT2pNGgr8tslSj4BDlfVPm"
+    BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAK%2B9lgEAAAAAjSAZPsz0k5Bioh%2F1%2F7gcj6iWWoc%3DIbZlWhY0O5dKm8cjnpKqY37pkPAIEia1hLyfHbqrN33rCudcQi"
+    ACCESS_TOKEN = "3465396372-BcaLYvTGYzAWkGHCCSYaU1M37DvruBkRQOhiDtY"
+    ACCESS_TOKEN_SECRET = "7QTf87DDwq7MClRBSSYfyUm8NSbGbJhs8zd6M16wgAdXM"
+
+    client = tweepy.Client(bearer_token=BEARER_TOKEN,
+                           consumer_key=API_KEY,
+                           consumer_secret=API_KEY_SECRET,
+                           access_token=ACCESS_TOKEN,
+                           access_token_secret=ACCESS_TOKEN_SECRET
+                           )
     return client
 
 
