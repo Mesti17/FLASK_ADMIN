@@ -1,10 +1,12 @@
 import pickle
 import pymysql
-# import swifter
+import swifter
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from nltk.corpus import stopwords
 from nltk.probability import FreqDist
 from nltk.tokenize import word_tokenize
+import mysql.connector as connection
+from sqlalchemy import create_engine
 # import mysql.connector
 import pandas as pd
 import numpy as np
@@ -17,200 +19,216 @@ import nltk
 nltk.download('punkt')
 nltk.download('stopwords')
 
+# #Using pymysql
+# conn = pymysql.connect(host='localhost', port=int(
+#     3306), user='root', password='', db='capres')
 
-conn = pymysql.connect(host='localhost', port=int(
-    3306), user='root', password='', db='capres')
+# #Using Mysql Connector
+# mydb = connection.connect(
+#     host="localhost", database='capres', user="root", passwd="", use_pure=True)
+# query = "Select * from sentimen;"
 
-df = pd.read_sql_query("SELECT * FROM sentimen", conn)
 
+def preprocess():
+    # Using SQLALchemy
+    engine = create_engine('mysql+pymysql://root:@localhost:3306/capres')
+    conn1 = engine.connect()
 
-df['case_folding'] = df['pesan'].str.lower()
+    # #Using pymysql
+    conn2 = pymysql.connect(host='localhost', port=int(
+        3306), user='root', password='', db='capres')
 
+    # Read the 'Sentimen' table into a pandas DataFrame
+    query = "SELECT * FROM Sentimen"
+    df = pd.read_sql(query, engine)
 
-def remove_tweet_special(text):
-    # remove tab, new line, ans back slice
-    text = text.replace('\\t', " ").replace(
-        '\\n', " ").replace('\\u', " ").replace('\\', " ")
+    # df = pd.read_sql_query(query, mydb)
+    df['case_folding'] = df['pesan'].str.lower()
 
-    # remove non ASCII (emoticon, chinese word. etc)
-    text = text.encode('ascii', 'replace').decode('ascii')
+    def remove_tweet_special(text):
+        # remove tab, new line, ans back slice
+        text = text.replace('\\t', " ").replace(
+            '\\n', " ").replace('\\u', " ").replace('\\', " ")
 
-    # remove mention, link, hastaq
-    text = ' '.join(
-        re.sub("([@#][A-Za-z0-9]+)|(\w+:\/\/\S+)", " ", text).split())
+        # remove non ASCII (emoticon, chinese word. etc)
+        text = text.encode('ascii', 'replace').decode('ascii')
 
-    # removw incomplete URL
-    return text.replace("http://", " ").replace("https://", " ")
+        # remove mention, link, hastaq
+        text = ' '.join(
+            re.sub("([@#][A-Za-z0-9]+)|(\w+:\/\/\S+)", " ", text).split())
 
+        # removw incomplete URL
+        return text.replace("http://", " ").replace("https://", " ")
 
-df['cleaning'] = df['case_folding'].apply(remove_tweet_special)
+    df['cleaning'] = df['case_folding'].apply(remove_tweet_special)
 
+    # remove number
 
-# remove number
-def remove_number(text):
-    return re.sub(r"\d+", "", text)
+    def remove_number(text):
+        return re.sub(r"\d+", "", text)
 
+    df['cleaning'] = df['cleaning'].apply(remove_number)
 
-df['cleaning'] = df['cleaning'].apply(remove_number)
+    # remove punctution
 
-# remove punctution
+    def remove_punctuation(text):
+        return text.translate(str.maketrans("", "", string.punctuation))
 
+    df['cleaning'] = df['cleaning'].apply(remove_punctuation)
 
-def remove_punctuation(text):
-    return text.translate(str.maketrans("", "", string.punctuation))
+    # remove whitespace leading & trailing
 
+    def remove_whitespace_LT(text):
+        return text.strip()
 
-df['cleaning'] = df['cleaning'].apply(remove_punctuation)
+    df['cleaning'] = df['cleaning'].apply(remove_whitespace_LT)
 
-# remove whitespace leading & trailing
+    # remove multiple whitespace into single whitespace
 
+    def remove_whitespace_multiple(text):
+        return re.sub('\s+', ' ', text)
 
-def remove_whitespace_LT(text):
-    return text.strip()
+    df['cleaning'] = df['cleaning'].apply(remove_whitespace_multiple)
 
+    # remove single char
 
-df['cleaning'] = df['cleaning'].apply(remove_whitespace_LT)
+    def remove_single_char(text):
+        return re.sub(r"\b[a-zA-Z]\b", "", text)
 
-# remove multiple whitespace into single whitespace
+    df['cleaning'] = df['cleaning'].apply(remove_single_char)
 
+    # get stopword from NLTK stopword
+    # get stopword indonesia
+    list_stopwords = stopwords.words('indonesian')
+    data = 'https://raw.githubusercontent.com/Braincore-id/IndoTWEEST/main/stopwords_twitter.csv'
 
-def remove_whitespace_multiple(text):
-    return re.sub('\s+', ' ', text)
+    # manualy add stopword
+    # append additional stopword
+    list_stopwords.extend(['yg', 'dg', 'dgn', 'ny', 'klo', 'kalo',
+                           'biar', 'bikin', 'bilang', 'gak', 'ga', 'krn',
+                           'nya', 'nih', 'sih', 'si', 'tau', 'utk', 'ya',
+                           'jd', 'jgn', 'sdh', 'aja', 'nyg', '&amp', 'yah',
+                           'loh', 'rt', 'hehe', 'pen', 'u', 't', 'd', 'amp'])
 
+    df_stopwords = pd.read_csv(data, names=['stopword'])
+    df_stopwords = df_stopwords.sort_values(by="stopword", ascending=True)
+    df_stopwords.reset_index(drop=True, inplace=True)
 
-df['cleaning'] = df['cleaning'].apply(remove_whitespace_multiple)
+    new_stopwords = []
 
-# remove single char
+    for data in df_stopwords['stopword']:
+        new_stopwords.append(data)
 
+    list_stopwords.extend(new_stopwords)
+    len(list_stopwords)
+    list_stopwords.sort()
 
-def remove_single_char(text):
-    return re.sub(r"\b[a-zA-Z]\b", "", text)
+    # remove stopword pada list token
 
+    def stopwords_removal(words):
+        wordlist = words.split()
+        return [word for word in wordlist if word not in list_stopwords]
 
-df['cleaning'] = df['cleaning'].apply(remove_single_char)
+    ser = pd.Series(df['cleaning'].apply(stopwords_removal))
 
+    kata2 = []
+    for pjg in range(len(ser)):
+        gabung2 = " ".join(ser[pjg])
+        kata2.append(gabung2)
 
-# get stopword from NLTK stopword
-# get stopword indonesia
-list_stopwords = stopwords.words('indonesian')
-data = 'https://raw.githubusercontent.com/Braincore-id/IndoTWEEST/main/stopwords_twitter.csv'
+    kata2_series = pd.Series(kata2)
+    df['hasil_stopwords'] = kata2_series
 
-# manualy add stopword
-# append additional stopword
-list_stopwords.extend(['yg', 'dg', 'dgn', 'ny', 'klo', 'kalo',
-                       'biar', 'bikin', 'bilang', 'gak', 'ga', 'krn',
-                       'nya', 'nih', 'sih', 'si', 'tau', 'utk', 'ya',
-                       'jd', 'jgn', 'sdh', 'aja', 'nyg', '&amp', 'yah',
-                       'loh', 'rt', 'hehe', 'pen', 'u', 't', 'd', 'amp'])
+    # # TOKENIZING
 
+    def word_tokenize_wrapper(text):
+        return word_tokenize(text)
 
-df_stopwords = pd.read_csv(data, names=['stopword'])
-df_stopwords = df_stopwords.sort_values(by="stopword", ascending=True)
-df_stopwords.reset_index(drop=True, inplace=True)
+    df['tweet_tokens'] = df['hasil_stopwords'].apply(word_tokenize_wrapper)
 
-new_stopwords = []
+    # STEMMING
+    # create stemming
+    factory = StemmerFactory()
+    stemmer = factory.create_stemmer()
 
-for data in df_stopwords['stopword']:
-    new_stopwords.append(data)
+    # stemmed
 
-list_stopwords.extend(new_stopwords)
-len(list_stopwords)
-list_stopwords.sort()
+    def stemmed(term):
+        return stemmer.stem(term)
 
-# remove stopword pada list token
+    term_dict = {}
 
+    for document in df['tweet_tokens']:
+        for term in document:
+            if term not in term_dict:
+                term_dict[term] = " "
 
-def stopwords_removal(words):
-    wordlist = words.split()
-    return [word for word in wordlist if word not in list_stopwords]
+    n = 1
+    for term in term_dict:
+        term_dict[term] = stemmed(term)
 
+        # apply stemmed term to dataframe
 
-ser = pd.Series(df['cleaning'].apply(stopwords_removal))
+    def get_stemmer_term(document):
+        return [term_dict[term] for term in document]
 
-kata2 = []
-for pjg in range(len(ser)):
-    gabung2 = " ".join(ser[pjg])
-    kata2.append(gabung2)
+    df['tweet_stemmer'] = df['tweet_tokens'].swifter.apply(get_stemmer_term)
 
+    # Mengubah "Positif" jadi 1 , "Neutral" jadi 0,     dan "Negatif" jadi -1
 
-kata2_series = pd.Series(kata2)
-df['hasil_stopwords'] = kata2_series
+    angka = []
+    for el in range(len(df["label"])):
 
+        if df["label"][el] == "positif":
+            angka_baru = 1
+        elif df["label"][el] == "netral":
+            angka_baru = 0
+        else:
+            angka_baru = -1
+        angka.append(angka_baru)
 
-# # TOKENIZING
+    angka_series = pd.Series(angka)
+    df['label_angka'] = angka_series
 
+    # acak baris data
+    df = df.sample(frac=1).reset_index(drop=True)
 
-def word_tokenize_wrapper(text):
-    return word_tokenize(text)
+    # Rearrange kolom
+    new_col = ['username', 'pesan', 'label', 'label_angka',
+               'case_folding', 'cleaning', 'hasil_stopwords', 'tweet_tokens', 'tweet_stemmer']
+    df = df.reindex(columns=new_col)
 
+    # Check which columns contain empty strings
+    columns_with_empty_strings = df.columns[df.isin(['']).any()].tolist()
+    # Identify rows with empty strings in the specified columns
+    empty_string_rows = df[df[columns_with_empty_strings].isin(
+        ['']).any(axis=1)].index
 
-df['tweet_tokens'] = df['hasil_stopwords'].apply(word_tokenize_wrapper)
+    # Delete rows with empty strings in any of the specified columns
+    df = df.drop(empty_string_rows)
 
-# STEMMING
-# create stemming
-factory = StemmerFactory()
-stemmer = factory.create_stemmer()
+    df.to_csv('dataset/data_bersih/hasil_preprocessing.csv', index=False)
 
-# stemmed
+    cursor = conn2.cursor()
 
+    sql = "INSERT INTO hasil_preprocessing (username, pesan, label, label_angka, case_folding, cleaning, hasil_stopwords, tweet_tokens, tweet_stemmer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-def stemmed(term):
-    return stemmer.stem(term)
+    for index, row in df.iterrows():
+        values = (str(row['username']), str(row['pesan']), str(row['label']), row['label_angka'], str(row['case_folding']), str(
+            row['cleaning']), str(row['hasil_stopwords']), str(row['tweet_tokens']), str(row['tweet_stemmer']))
 
+        cursor.execute(sql, values)
+    # Commit the changes to the database
+    conn2.commit()
 
-term_dict = {}
+    # Close the connection
+    conn2.close()
+    # Insert into database
+    # with conn:
+    #     values = df.to_dict('records')
+    #     insert_query = "INSERT INTO hasil_preprocessing(username, pesan, label, label_angka, case_folding, cleaning, hasil_stopwords, tweet_tokens, tweet_stemmer) VALUES (%(username)s, %(pesan)s, %(label)s, %(label_angka)s, %(case_folding)s, %(cleaning)s, %(hasil_stopwords)s, %(tweet_tokens)s, %(tweet_stemmer)s)"
+    #     conn.execute(insert_query, values)
 
-for document in df['tweet_tokens']:
-    for term in document:
-        if term not in term_dict:
-            term_dict[term] = " "
+    # data_dict = df.to_dict(orient='records')
 
-
-n = 1
-for term in term_dict:
-    term_dict[term] = stemmed(term)
-
-    # apply stemmed term to dataframe
-
-
-def get_stemmer_term(document):
-    return [term_dict[term] for term in document]
-
-
-df['tweet_stemmer'] = df['tweet_tokens'].swifter.apply(get_stemmer_term)
-
-# Mengubah "Positif" jadi 1 , "Neutral" jadi 0,     dan "Negatif" jadi -1
-
-angka = []
-for el in range(len(df["label"])):
-
-    if df["label"][el] == "positif":
-        angka_baru = 1
-    elif df["label"][el] == "netral":
-        angka_baru = 0
-    else:
-        angka_baru = -1
-    angka.append(angka_baru)
-
-
-angka_series = pd.Series(angka)
-df['label_angka'] = angka_series
-
-# acak baris data
-df = df.sample(frac=1).reset_index(drop=True)
-
-# Rearrange kolom
-new_col = ['id_calon', 'username', 'pesan', 'label', 'label_angka',
-           'case_folding', 'cleaning', 'hasil_stopwords', 'tweet_tokens', 'tweet_stemmer']
-df = df.reindex(columns=new_col)
-
-# Check which columns contain empty strings
-columns_with_empty_strings = df.columns[df.isin(['']).any()].tolist()
-# Identify rows with empty strings in the specified columns
-empty_string_rows = df[df[columns_with_empty_strings].isin(
-    ['']).any(axis=1)].index
-
-# Delete rows with empty strings in any of the specified columns
-df = df.drop(empty_string_rows)
-
-df.to_csv('data_bersih/hasil_preprocessing.csv', index=False)
+    # df.to_sql('hasil_preprocessing', conn, if_exists="append")

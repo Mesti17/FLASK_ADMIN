@@ -10,8 +10,8 @@ from nltk.corpus import stopwords
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 # from scraping_data import scraping_tweet
 from scraping_data import search_tweets_ganjar, search_tweets_anies, search_tweets_prabowo
-import labeling_data
-import preprocessing_data
+from labeling_data import label_data
+from preprocessing_data import preprocess
 from gabung_data import gabungdata
 
 app = Flask(__name__)
@@ -48,6 +48,13 @@ def gabungData():
 
 @app.route("/labeldata", methods=['GET', "POST"])
 def labelData():
+    label_data()
+    return redirect(url_for("index"))
+
+
+@app.route("/preprocessing", methods=['GET', "POST"])
+def preprocessingData():
+    preprocess()
     return redirect(url_for("index"))
 
 
