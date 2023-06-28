@@ -39,11 +39,13 @@ def preprocess():
         3306), user='root', password='', db='capres')
 
     # Read the 'Sentimen' table into a pandas DataFrame
-    query = "SELECT * FROM Sentimen"
-    df = pd.read_sql(query, engine)
+    # query = "SELECT * FROM Sentimen"
+    # df = pd.read_sql(query, engine)
+
+    df = pd.read_csv("dataset/data_hasil_label/data_hasil_label.csv")
 
     # df = pd.read_sql_query(query, mydb)
-    df['case_folding'] = df['pesan'].str.lower()
+    df['case_folding'] = df['Tweet'].str.lower()
 
     def remove_tweet_special(text):
         # remove tab, new line, ans back slice
@@ -177,11 +179,11 @@ def preprocess():
     # Mengubah "Positif" jadi 1 , "Neutral" jadi 0,     dan "Negatif" jadi -1
 
     angka = []
-    for el in range(len(df["label"])):
+    for el in range(len(df["Label"])):
 
-        if df["label"][el] == "positif":
+        if df["Label"][el] == "positif":
             angka_baru = 1
-        elif df["label"][el] == "netral":
+        elif df["Label"][el] == "netral":
             angka_baru = 0
         else:
             angka_baru = -1

@@ -13,6 +13,7 @@ from scraping_data import search_tweets_ganjar, search_tweets_anies, search_twee
 from labeling_data import label_data
 from preprocessing_data import preprocess
 from gabung_data import gabungdata
+from model import modeldata
 
 app = Flask(__name__)
 
@@ -55,6 +56,12 @@ def labelData():
 @app.route("/preprocessing", methods=['GET', "POST"])
 def preprocessingData():
     preprocess()
+    return redirect(url_for("index"))
+
+
+@app.route("/model", methods=['GET', "POST"])
+def modelData():
+    modeldata()
     return redirect(url_for("index"))
 
 
