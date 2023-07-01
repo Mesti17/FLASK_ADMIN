@@ -18,12 +18,13 @@ nltk.download('stopwords')
 
 
 def modeldata():
+
     # menghubungkan ke database
     conn = pymysql.connect(host='localhost', port=int(
         3306), user='root', passwd='', db='capres')
 
     df = pd.read_sql_query("SELECT * FROM hasil_preprocessing ", conn)
-    df2 = pd.read_sql_query("SELECT * FROM sentimen ", conn)
+    # df2 = pd.read_sql_query("SELECT * FROM sentimen ", conn)
 
     # df.info()
 
@@ -60,11 +61,18 @@ def modeldata():
     #     print('Sentimen tweet adalah NEGATIF')
 
     # name file5
-    filename = 'model_nb.pickle'
+    model_path = 'F:/FLASK_APP/model/model_nb.pickle'
+    vec_path = 'F:/FLASK_APP/model/vec.pickle'
+    model = 'model_nb.pickle'
 
     # Save model
-    pickle.dump(modelNB, open(filename, 'wb'))
+    with open(model_path, 'wb') as file:
+        pickle.dump(modelNB, file)
+
+    # Save vectorizer
+    with open(vec_path, 'wb') as handle:
+        pickle.dump(vectorizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     # Load model yg udah disimpan
 
-    loaded_model = pickle.load(open('model_nb.pickle', "rb"))
+    # loaded_model = pickle.load(open('model_nb.pickle', "rb"))
