@@ -196,7 +196,7 @@ def preprocess():
     df = df.sample(frac=1).reset_index(drop=True)
 
     # Rearrange kolom
-    new_col = ['username', 'pesan', 'label', 'label_angka',
+    new_col = ['Username', 'Tweet', 'Label', 'label_angka',
                'case_folding', 'cleaning', 'hasil_stopwords', 'tweet_tokens', 'tweet_stemmer']
     df = df.reindex(columns=new_col)
 
@@ -216,7 +216,7 @@ def preprocess():
     sql = "INSERT INTO hasil_preprocessing (username, pesan, label, label_angka, case_folding, cleaning, hasil_stopwords, tweet_tokens, tweet_stemmer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     for index, row in df.iterrows():
-        values = (str(row['username']), str(row['pesan']), str(row['label']), row['label_angka'], str(row['case_folding']), str(
+        values = (str(row['Username']), str(row['Tweet']), str(row['Label']), row['label_angka'], str(row['case_folding']), str(
             row['cleaning']), str(row['hasil_stopwords']), str(row['tweet_tokens']), str(row['tweet_stemmer']))
 
         cursor.execute(sql, values)

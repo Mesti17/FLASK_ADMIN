@@ -35,7 +35,7 @@ def modeldata():
     # Split dataset dan bikin model
 
     x_train, x_test, y_train, y_test = train_test_split(
-        v_data, df['label_angka'], test_size=0.2, random_state=0, shuffle=True)
+        v_data, df['label_angka'], test_size=0.25, random_state=0, shuffle=True)
     modelNB = MultinomialNB()
     md = modelNB.fit(x_train, y_train)
     pred_nb = modelNB.predict(x_test)
@@ -48,14 +48,16 @@ def modeldata():
 
     # TES PREDIKSI
 
-    teks = str(df2['pesan'])
-    vec = vectorizer.transform([teks])
-    prediksi = modelNB.predict(vec)
+    # teks = str(df2['pesan'])
+    # vec = vectorizer.transform([teks])
+    # prediksi = modelNB.predict(vec)
 
-    if prediksi == 1:
-        print('Sentimen tweet adalah POSITIF')
-    else:
-        print('Sentimen tweet adalah NEGATIF')
+    # if prediksi == 1:
+    #     print('Sentimen tweet adalah POSITIF')
+    # elif prediksi == 0:
+    #     print('Sentimen tweet adalah NETRAL')
+    # else:
+    #     print('Sentimen tweet adalah NEGATIF')
 
     # name file5
     filename = 'model_nb.pickle'
