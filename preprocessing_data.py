@@ -181,9 +181,9 @@ def preprocess():
     angka = []
     for el in range(len(df["Label"])):
 
-        if df["Label"][el] == "positif":
+        if df["Label"][el] == "Positif":
             angka_baru = 1
-        elif df["Label"][el] == "netral":
+        elif df["Label"][el] == "Netral":
             angka_baru = 0
         else:
             angka_baru = -1

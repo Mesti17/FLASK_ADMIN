@@ -4,12 +4,12 @@ import re
 import requests
 import numpy as np
 import pandas as pd
-import nltk
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.corpus import stopwords
-from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+# import nltk
+# from nltk.tokenize import sent_tokenize, word_tokenize
+# from nltk.corpus import stopwords
+# from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 # from scraping_data import scraping_tweet
-from scraping_data import search_tweets_ganjar, search_tweets_anies, search_tweets_prabowo
+from scraping_data import scrape_tweet
 from labeling_data import label_data
 from preprocessing_data import preprocess
 from gabung_data import gabungdata
@@ -25,19 +25,19 @@ def index():
 
 @app.route("/scraping_prabowo", methods=['GET', "POST"])
 def scrapingTweetPrabowo():
-    search_tweets_prabowo()
+    scrape_tweet('Prabowo')
     return redirect(url_for("index"))
 
 
 @app.route("/scraping_ganjar", methods=['GET', "POST"])
 def scrapingTweetGanjar():
-    search_tweets_ganjar()
+    scrape_tweet('Ganjar')
     return redirect(url_for("index"))
 
 
 @app.route("/scraping_anies", methods=['GET', "POST"])
 def scrapingTweetAnies():
-    search_tweets_anies()
+    scrape_tweet('Anies')
     return redirect(url_for("index"))
 
 
