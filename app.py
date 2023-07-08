@@ -16,6 +16,7 @@ from gabung_data import gabungdata
 from model import modeldata
 
 app = Flask(__name__)
+path_scraping = "dataset/data_scraping"
 
 
 @app.route("/", methods=['GET'])
@@ -25,19 +26,22 @@ def index():
 
 @app.route("/scraping_prabowo", methods=['GET', "POST"])
 def scrapingTweetPrabowo():
-    scrape_tweet('Prabowo')
+    df_prabowo = scrape_tweet('Prabowo')
+    df_prabowo.to_csv(os.path.join(path_scraping, "Scraping_Prabowo2.csv"), index=False, encoding="utf-8")
     return redirect(url_for("index"))
 
 
 @app.route("/scraping_ganjar", methods=['GET', "POST"])
 def scrapingTweetGanjar():
-    scrape_tweet('Ganjar')
+    df_ganjar = scrape_tweet('Ganjar')
+    df_ganjar.to_csv(os.path.join(path_scraping, "Scraping_Ganjar2.csv"), index=False, encoding="utf-8")
     return redirect(url_for("index"))
 
 
 @app.route("/scraping_anies", methods=['GET', "POST"])
 def scrapingTweetAnies():
-    scrape_tweet('Anies')
+    df_anies = scrape_tweet('Anies')
+    df_anies.to_csv(os.path.join(path_scraping, "Scraping_Ganjar2.csv"), index=False, encoding="utf-8")
     return redirect(url_for("index"))
 
 

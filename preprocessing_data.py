@@ -16,8 +16,8 @@ import matplotlib.pyplot as plt
 import pymysql
 # import word_tokenize & fregdist from NLTK
 import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('stopwords')
 
 # #Using pymysql
 # conn = pymysql.connect(host='localhost', port=int(
@@ -45,7 +45,7 @@ def preprocess():
     df = pd.read_csv("dataset/data_hasil_label/data_hasil_label.csv")
 
     # df = pd.read_sql_query(query, mydb)
-    df['case_folding'] = df['Tweet'].str.lower()
+    df['case_folding'] = df['pesan'].str.lower()
 
     def remove_tweet_special(text):
         # remove tab, new line, ans back slice
@@ -179,11 +179,11 @@ def preprocess():
     # Mengubah "Positif" jadi 1 , "Neutral" jadi 0,     dan "Negatif" jadi -1
 
     angka = []
-    for el in range(len(df["Label"])):
+    for el in range(len(df["label"])):
 
-        if df["Label"][el] == "Positif":
+        if df["label"][el] == "Positif":
             angka_baru = 1
-        elif df["Label"][el] == "Netral":
+        elif df["label"][el] == "Netral":
             angka_baru = 0
         else:
             angka_baru = -1
@@ -196,7 +196,7 @@ def preprocess():
     df = df.sample(frac=1).reset_index(drop=True)
 
     # Rearrange kolom
-    new_col = ['Username', 'Tweet', 'Label', 'label_angka',
+    new_col = ['username', 'pesan', 'label', 'label_angka',
                'case_folding', 'cleaning', 'hasil_stopwords', 'tweet_tokens', 'tweet_stemmer']
     df = df.reindex(columns=new_col)
 
@@ -216,7 +216,7 @@ def preprocess():
     sql = "INSERT INTO hasil_preprocessing (username, pesan, label, label_angka, case_folding, cleaning, hasil_stopwords, tweet_tokens, tweet_stemmer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     for index, row in df.iterrows():
-        values = (str(row['Username']), str(row['Tweet']), str(row['Label']), row['label_angka'], str(row['case_folding']), str(
+        values = (str(row['username']), str(row['pesan']), str(row['label']), row['label_angka'], str(row['case_folding']), str(
             row['cleaning']), str(row['hasil_stopwords']), str(row['tweet_tokens']), str(row['tweet_stemmer']))
 
         cursor.execute(sql, values)

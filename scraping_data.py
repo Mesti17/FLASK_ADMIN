@@ -74,12 +74,15 @@ def scrape_tweet(search_term):
     
     time.sleep(2)
     keyword = search_term
-    driver.get("https://twitter.com/search?q="+"%20%23"+keyword+f"%20lang%3Aid%20-filter%3Alinks&src=typed_query")
+    driver.get("https://twitter.com/search?f=top&q=("+keyword+"%20OR%20%23"+keyword+")%20lang%3Aid%20-filter%3Alinks&src=typed_query")
+    print("https://twitter.com/search?f=top&q=("+keyword+"%20OR%20%23"+keyword+")%20lang%3Aid%20-filter%3Alinks&src=typed_query")
+ 
+    #"https://twitter.com/search?f=top&q=(Ganjar%20OR%20%23ganjar)%20lang%3Aid%20-filter%3Alinks&src=typed_query"
 
     time.sleep(5)
 
     tweet_set = set()
-    target_tweet = 300
+    target_tweet = 100
 
     while len(tweet_set) < target_tweet:
         tweets = driver.find_elements(By.CSS_SELECTOR, '[data-testid="tweet"]')
@@ -103,7 +106,7 @@ def scrape_tweet(search_term):
                 waktu = ""
 
             tweet_text = tweet.find_element(By.CSS_SELECTOR, 'div[data-testid="tweetText"]').text
-            tweet_set.add((nama, username, tweet_text))
+            tweet_set.add((username, tweet_text))
 
             if len(tweet_set) >= target_tweet:
                 break
@@ -115,8 +118,9 @@ def scrape_tweet(search_term):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(3)
         
-    df = pd.DataFrame(tweet_set, columns=["Username", "Nama", "Tweet"])    
-    df.to_csv(os.path.join(path, "Scraping_"+search_term+"2.csv"), index=False, encoding="utf-8")
+    df = pd.DataFrame(tweet_set, columns=["username", "pesan"])    
+    return df
+    
     
     driver.quit()   
     

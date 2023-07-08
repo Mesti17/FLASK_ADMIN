@@ -29,15 +29,15 @@ def label_data():
 
     # Iterate over each tweet and count the negative and positive words
     for index, row in df.iterrows():
-        tweet = row['Tweet']
+        tweet = row['pesan']
         negative_count, positive_count = count_sentiment_words(tweet)
         df.at[index, 'Negative Count'] = negative_count
         df.at[index, 'Positive Count'] = positive_count
 
     # Assign the label based on the count of negative and positive words
-    df['Label'] = 'netral'
-    df.loc[df['Negative Count'] > df['Positive Count'], 'Label'] = 'negatif'
-    df.loc[df['Positive Count'] > df['Negative Count'], 'Label'] = 'positif'
+    df['label'] = 'netral'
+    df.loc[df['Negative Count'] > df['Positive Count'], 'label'] = 'negatif'
+    df.loc[df['Positive Count'] > df['Negative Count'], 'label'] = 'positif'
     # df.loc[df['Positive Count'] == df['Negative Count'], 'Label'] = 'Positive'
 
     df.to_csv("dataset/data_hasil_label/data_hasil_label.csv",
@@ -51,7 +51,7 @@ def label_data():
 
     # Iterate over the rows of the DataFrame and insert each row into the table
     for index, row in df.iterrows():
-        values = (str(row['Username']), str(row['Tweet']), str(row['Label']))
+        values = (str(row['username']), str(row['pesan']), str(row['label']))
         cursor.execute(sql, values)
 
     # Commit the changes to the database
