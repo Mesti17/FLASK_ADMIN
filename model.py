@@ -26,6 +26,7 @@ def modeldata():
     df = pd.read_sql_query("SELECT * FROM hasil_preprocessing ", conn)
     # df2 = pd.read_sql_query("SELECT * FROM sentimen ", conn)
 
+
     # df.info()
 
     # TF-IDF

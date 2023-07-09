@@ -39,10 +39,10 @@ def preprocess():
         3306), user='root', password='', db='capres')
 
     # Read the 'Sentimen' table into a pandas DataFrame
-    # query = "SELECT * FROM Sentimen"
-    # df = pd.read_sql(query, engine)
+    query = "SELECT * FROM Sentimen"
+    df = pd.read_sql(query, engine)
 
-    df = pd.read_csv("dataset/data_hasil_label/data_hasil_label.csv")
+    # df = pd.read_csv("dataset/data_hasil_label/data_hasil_label.csv")
 
     # df = pd.read_sql_query(query, mydb)
     df['case_folding'] = df['pesan'].str.lower()
@@ -57,7 +57,7 @@ def preprocess():
 
         # remove mention, link, hastaq
         text = ' '.join(
-            re.sub("([@#][A-Za-z0-9]+)|(\w+:\/\/\S+)", " ", text).split())
+            re.sub("([@][A-Za-z0-9]+)|(\w+:\/\/\S+)", " ", text).split())
 
         # removw incomplete URL
         return text.replace("http://", " ").replace("https://", " ")
@@ -181,9 +181,9 @@ def preprocess():
     angka = []
     for el in range(len(df["label"])):
 
-        if df["label"][el] == "Positif":
+        if df["label"][el] == "positif":
             angka_baru = 1
-        elif df["label"][el] == "Netral":
+        elif df["label"][el] == "netral":
             angka_baru = 0
         else:
             angka_baru = -1
