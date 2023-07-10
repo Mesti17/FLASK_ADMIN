@@ -8,9 +8,9 @@ def label_data():
         3306), user='root', passwd='', db='capres')
 
     negative_words = pd.read_csv(
-        "dataset/data_label/negatif_ta2.csv", header=None)[0].tolist()
+        "dataset/data_label/negatif_ta1.csv", header=None)[0].tolist()
     positive_words = pd.read_csv(
-        "dataset/data_label/positif_ta2.csv", header=None)[0].tolist()
+        "dataset/data_label/positif_ta1.csv", header=None)[0].tolist()
 
     df = pd.read_csv("dataset/data_scraping/tweet_gabungan.csv")
 

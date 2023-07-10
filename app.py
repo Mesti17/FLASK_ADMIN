@@ -41,7 +41,7 @@ def scrapingTweetGanjar():
 @app.route("/scraping_anies", methods=['GET', "POST"])
 def scrapingTweetAnies():
     df_anies = scrape_tweet('Anies')
-    df_anies.to_csv(os.path.join(path_scraping, "Scraping_Ganjar2.csv"), index=False, encoding="utf-8")
+    df_anies.to_csv(os.path.join(path_scraping, "Scraping_Anies2.csv"), index=False, encoding="utf-8")
     return redirect(url_for("index"))
 
 

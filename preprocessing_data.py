@@ -40,9 +40,9 @@ def preprocess():
 
     # Read the 'Sentimen' table into a pandas DataFrame
     query = "SELECT * FROM Sentimen"
-    df = pd.read_sql(query, engine)
+    # df = pd.read_sql(query, engine)
 
-    # df = pd.read_csv("dataset/data_hasil_label/data_hasil_label.csv")
+    df = pd.read_csv("dataset/data_hasil_label/data_hasil_label.csv")
 
     # df = pd.read_sql_query(query, mydb)
     df['case_folding'] = df['pesan'].str.lower()
